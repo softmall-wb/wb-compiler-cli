@@ -6,7 +6,7 @@
 ## Get Started
 ### Clone this repository to your disk
 ``` shell
-https://github.com/softmall-wb/wb-compiler-cli.git
+git clone https://github.com/softmall-wb/wb-compiler-cli.git
 ```
 ### Pack & Install
 ``` shell
