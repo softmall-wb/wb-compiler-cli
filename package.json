@@ -5,7 +5,7 @@
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "--make-install": "rm wb-compiler-cli-1.0.0.tgz && npm pack && npm i ./wb-compiler-cli-1.0.0.tgz -g",
+    "make-install": "npm pack && npm i ./wb-compiler-cli-1.0.0.tgz -g && rm wb-compiler-cli-1.0.0.tgz",
     "test": "test"
   },
   "keywords": [

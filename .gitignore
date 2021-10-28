@@ -1,5 +1,4 @@
-*.tgz
+# *.tgz
 .DS_Store
 node_modules/
 test*
-
