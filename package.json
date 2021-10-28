@@ -1,0 +1,26 @@
+{
+  "name": "wb-compiler-cli",
+  "version": "1.0.0",
+  "description": "A npm package style compiler-cli for softmall-wb-compiler",
+  "main": "index.js",
+  "bin": "index.js",
+  "scripts": {
+    "--make-install": "rm wb-compiler-cli-1.0.0.tgz && npm pack && npm i ./wb-compiler-cli-1.0.0.tgz -g",
+    "test": "test"
+  },
+  "keywords": [
+    "compiler",
+    "cli",
+    "softmall"
+  ],
+  "author": "meetinaxd",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "node-sass": "^6.0.1",
+    "rollup": "^2.58.3",
+    "rollup-plugin-softmall-wb": "file:rollup-plugin-softmall-wb-0.0.1.tgz",
+    "shelljs": "^0.8.4",
+    "yargs": "^16.2.0"
+  }
+}
