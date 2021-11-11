@@ -1,10 +1,12 @@
 {
   "name": "wb-compiler-cli",
   "version": "1.0.0",
+  "type": "module",
   "description": "A npm package style compiler-cli for softmall-wb-compiler",
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
+    "build": "rollup -c ./scripts/rollup.config.js",
     "make-install": "npm pack && npm i ./wb-compiler-cli-1.0.0.tgz -g && rm wb-compiler-cli-1.0.0.tgz",
     "test": "test"
   },
@@ -15,9 +17,13 @@
   ],
   "author": "meetinaxd",
   "license": "ISC",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.6",
+    "rollup-plugin-terser": "^7.0.2"
+  },
   "dependencies": {
     "colors": "^1.4.0",
-    "node-sass": "^6.0.1",
+    "dart-sass": "^1.25.0",
     "rollup": "^2.58.3",
     "rollup-plugin-softmall-wb": "file:rollup-plugin-softmall-wb-0.0.1.tgz",
     "shelljs": "^0.8.4",

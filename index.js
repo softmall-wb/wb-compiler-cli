@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+// #!/usr/bin/env node
 
 /**
  * Softmall Compiler CLI
@@ -24,6 +24,17 @@
  *    具体参数请参考 wbc-cli-default.config.js
  */
 
+// const shelljs = require("shelljs")
+import fs from "fs";
+import p from "path";
+import colors from "colors";
+import yargs from 'yargs';
+import {
+  rollup
+} from 'rollup';
+import compieConfig from './compile.js';
+const __dirname = p.resolve();
+
 Date.prototype.format = function (fmt) {
   let ret;
   const opt = {
@@ -48,33 +59,29 @@ const MODE = {
   folder: 'folder'
 }
 
-const shelljs = require("shelljs")
-const fs = require("fs")
-const p = require("path")
-var colors = require("colors")
-const yargs = require("yargs")
-  .option('p', {
-    alias: 'prod',
-    demand: false,
-    default: true,
-    describe: 'Compile in production mode',
-    type: 'boolean'
-  })
-  .option('d', {
-    alias: 'dev',
-    demand: false,
-    default: false,
-    describe: 'Compile in development mode',
-    type: 'boolean'
-  })
-  .option('w', {
-    alias: 'watch',
-    demand: false,
-    default: false,
-    describe: 'Recompile when its source files change',
-    type: 'boolean'
-  })
-  .argv
+yargs.option('p', {
+  alias: 'prod',
+  demand: false,
+  default: true,
+  describe: 'Compile in production mode',
+  type: 'boolean'
+})
+.option('d', {
+  alias: 'dev',
+  demand: false,
+  default: false,
+  describe: 'Compile in development mode',
+  type: 'boolean'
+})
+.option('w', {
+  alias: 'watch',
+  demand: false,
+  default: false,
+  describe: 'Recompile when its source files change',
+  type: 'boolean'
+})
+.argv
+
 
 // 默认配置文件，如果项目内存在wbc-cli.config.js就会自动合并。
 const config = {
@@ -256,28 +263,36 @@ function compile(filelist) {
  *
  * @returns {number} 编译结果，true为编译成功
  */
-function singleCompile(source, target, mode, onError, onSuccess) {
-  const targetDir = target
+async function singleCompile(source, target, mode, onError, onSuccess) {
+  // const targetDir = target
   /**
    * yargs.d? 'dev': 'prod'
    */
-  const ret = shelljs.exec(`
-    export PATH="$PATH:${p.resolve(__dirname, 'node_modules/rollup/dist/bin')}" &&
-    export WB_SOURCE=${source} &&
-    export WB_TARGET=${targetDir} &&
-    export WB_MODE=${mode} &&
-    rollup -c ${p.resolve(__dirname, './compile.mjs')} --silent
-  `, {
-    silent: true
-  })
+  // const ret = shelljs.exec(`
+  //   export PATH="$PATH:${p.resolve(__dirname, 'node_modules/rollup/dist/bin')}" &&
+  //   export WB_SOURCE=${source} &&
+  //   export WB_TARGET=${targetDir} &&
+  //   export WB_MODE=${mode} &&
+  //   rollup -c ${p.resolve(__dirname, './compile.mjs')} --silent
+  // `, {
+  //   silent: true
+  // })
+  let isSuccess = true;
+  try {
 
-  // 如果提供了回调函数，则回调
-  if (ret.code !== 0 && isFunction(onError)) {
-    onError(ret.stderr)
-  } else if (ret.code === 0 && isFunction(onSuccess)) {
-    onSuccess()
+    const options = compieConfig(source, target, mode);
+    console.log(options);
+    const bundle = await rollup(options);
+    // // const { output } = await bundle.generate(outputOptions);
+    // await bundle.write(outputOptions);
+    await bundle.close();
+
+    if (isFunction(onSuccess)) onSuccess();
+  } catch (e) {
+    if (isFunction(onError)) onError(e);
+    isSuccess = false;
   }
-  return ret.code === 0
+  return isSuccess;
 }
 
 function rm(path) {
