@@ -1,4 +1,4 @@
-// #!/usr/bin/env node
+#!/usr/bin/env node
 
 /**
  * Softmall Compiler CLI
@@ -28,7 +28,8 @@
 import fs from "fs";
 import p from "path";
 import colors from "colors";
-import yargs from 'yargs';
+import yargs from "yargs";
+import { hideBin } from "yargs/helpers"
 import {
   rollup
 } from 'rollup';
@@ -59,7 +60,8 @@ const MODE = {
   folder: 'folder'
 }
 
-yargs.option('p', {
+const args = yargs(hideBin(process.argv))
+.option('p', {
   alias: 'prod',
   demand: false,
   default: true,
@@ -80,8 +82,7 @@ yargs.option('p', {
   describe: 'Recompile when its source files change',
   type: 'boolean'
 })
-.argv
-
+.parse()
 
 // 默认配置文件，如果项目内存在wbc-cli.config.js就会自动合并。
 const config = {
@@ -107,7 +108,7 @@ let mode = ""
 
 /**  1.路径识别  **/
 
-if (yargs._.length < 1) {
+if (args._.length < 1) {
   console.log("No input provided, compile terminated.".red)
   process.exit(-1)
 }
@@ -118,7 +119,7 @@ if (!fs.existsSync(config.rootDir) || !fs.existsSync("package.json") || !fs.exis
   process.exit(-1)
 }
 
-const arg = yargs._[0]
+const arg = args._[0]
 let path = p.resolve(arg)
 let name = p.basename(arg)
 
@@ -171,7 +172,7 @@ if (mode === MODE.single) {
   compile(shelljs.ls(`${fnPath}/*.vue`))
 }
 
-if (yargs.w) {
+if (args.w) {
   console.log("Watching for files change...")
   watch(path)
 }
@@ -180,7 +181,7 @@ if (yargs.w) {
 // path = ${path}
 // target = ${targetDir}
 // projectRoot = ${projectRoot}
-// mode = ${yargs.d? 'dev': 'prod'}
+// mode = ${args.d? 'dev': 'prod'}
 // `)
 
 // console.log(p.resolve(__dirname, './compile.mjs'))
@@ -237,18 +238,18 @@ function compile(filelist) {
     }
 
     // 默认是prod
-    if (yargs.p) {
+    if (args.p) {
       const targetDir = p.resolve(config.outDir(fnPath, fnName, mode, 'prod'))
       singleCompile(e, targetDir, 'prod', errorFn, () => successFn(targetDir, 'production'))
     }
-    if (yargs.d) {
+    if (args.d) {
       const targetDir = p.resolve(config.outDir(fnPath, fnName, mode, 'dev'))
       singleCompile(e, targetDir, 'dev', errorFn, () => successFn(targetDir, 'development'))
     }
 
   })
 
-  if (!yargs.w) {
+  if (!args.w) {
     isFunction(config.finished) && config.finished()
   }
 }
@@ -266,7 +267,7 @@ function compile(filelist) {
 async function singleCompile(source, target, mode, onError, onSuccess) {
   // const targetDir = target
   /**
-   * yargs.d? 'dev': 'prod'
+   * args.d? 'dev': 'prod'
    */
   // const ret = shelljs.exec(`
   //   export PATH="$PATH:${p.resolve(__dirname, 'node_modules/rollup/dist/bin')}" &&
