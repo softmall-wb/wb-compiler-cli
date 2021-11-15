@@ -6,8 +6,7 @@
   "main": "index.js",
   "bin": "index.js",
   "scripts": {
-    "build": "rollup -c ./scripts/rollup.config.js",
-    "make-install": "npm pack && npm i ./wb-compiler-cli-1.0.0.tgz -g && rm wb-compiler-cli-1.0.0.tgz",
+    "make-install": "npm pack && npm i ./wb-compiler-cli-*.tgz -g && rm -rf ./dist && mkdir ./dist && cp ./*.tgz ./dist/ && rm -rf ./wb-compiler-cli-*.tgz",
     "test": "test"
   },
   "keywords": [

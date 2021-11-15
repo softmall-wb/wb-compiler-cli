@@ -283,10 +283,20 @@ async function singleCompile(source, target, mode, onError, onSuccess) {
 
     const options = compieConfig(source, target, mode);
     console.log(options);
-    const bundle = await rollup(options);
-    // // const { output } = await bundle.generate(outputOptions);
-    // await bundle.write(outputOptions);
-    await bundle.close();
+
+    for(let option of options){
+      // option.input.plugins = option.plugins;
+      // option.output.plugins = option.plugins;
+      const bundle = await rollup({
+        input: option.input,
+        plugins: option.plugins
+      });
+      await bundle.write({
+        output: option.output,
+        plugins: option.plugins
+      });
+      await bundle.close();
+    }
 
     if (isFunction(onSuccess)) onSuccess();
   } catch (e) {
