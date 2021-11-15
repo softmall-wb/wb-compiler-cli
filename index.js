@@ -24,7 +24,6 @@
  *    具体参数请参考 wbc-cli-default.config.js
  */
 
-// const shelljs = require("shelljs")
 import fs from "fs";
 import p from "path";
 import colors from "colors";
@@ -162,6 +161,19 @@ if (path.indexOf(projectRoot) === -1) {
   process.exit(-1)
 }
 
+function ls(path, suffix = ".vue"){
+  let files = fs.readdirSync(path);
+  const filelist = [];
+  files.forEach((item) => {
+    let fPath = path + "/" + item;
+    let stat = fs.statSync(fPath);
+    if (stat.isFile() === true && item.endsWith(suffix)) {
+      filelist.push(fPath);
+    }
+  });
+  return filelist;
+}
+
 /**  2.开始编译过程  **/
 // const targetDir = p.resolve(config.outDir(fnPath, fnName, mode))
 if (mode === MODE.single) {
@@ -169,7 +181,8 @@ if (mode === MODE.single) {
   compile([path])
 } else {
   // 文件夹编译
-  compile(shelljs.ls(`${fnPath}/*.vue`))
+  
+  compile(ls(fnPath))
 }
 
 if (args.w) {

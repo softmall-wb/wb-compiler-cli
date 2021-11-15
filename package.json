@@ -25,7 +25,6 @@
     "rollup": "^2.58.3",
     "rollup-plugin-softmall-wb": "file:rollup-plugin-softmall-wb-0.0.1.tgz",
     "sass": "^1.43.4",
-    "shelljs": "^0.8.4",
     "yargs": "^16.2.0"
   }
 }
